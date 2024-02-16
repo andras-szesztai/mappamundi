@@ -1,20 +1,15 @@
-import { Link, Stack } from 'expo-router';
-import { YStack } from 'tamagui';
-
-import { Container, Main, Subtitle, Title } from '../tamagui.config';
+import { Stack } from 'expo-router';
+import { Main, Text, View, YStack } from 'tamagui';
 
 export default function NotFoundScreen() {
   return (
-    <Container>
+    <View>
       <Stack.Screen options={{ title: 'Oops!' }} />
       <Main>
-        <YStack>
-          <Title>This screen doesn't exist.</Title>
-          <Link href="/">
-            <Subtitle>Go to home screen!</Subtitle>
-          </Link>
+        <YStack gap="$-10">
+          <Text>This screen doesn't exist.</Text>
         </YStack>
       </Main>
-    </Container>
+    </View>
   );
 }

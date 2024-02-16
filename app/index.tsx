@@ -1,23 +1,21 @@
+import { Airplay } from '@tamagui/lucide-icons';
 import { Stack, Link } from 'expo-router';
-import { YStack } from 'tamagui';
-
-import { Container, Main, Title, Subtitle, Button, ButtonText } from '../tamagui.config';
+import { Button, ButtonText, Main, Text, View, YStack } from 'tamagui';
 
 export default function Page() {
   return (
-    <Container>
+    <View>
       <Main>
         <Stack.Screen options={{ title: 'Overview' }} />
         <YStack>
-          <Title>Hello World</Title>
-          <Subtitle>This is the first page of your app.</Subtitle>
+          <Text>Hello World</Text>
         </YStack>
         <Link href={{ pathname: '/details', params: { name: 'Dan' } }} asChild>
-          <Button>
-            <ButtonText>Show Details</ButtonText>
+          <Button alignSelf="center" icon={Airplay} size="$6">
+            <ButtonText>Large</ButtonText>
           </Button>
         </Link>
       </Main>
-    </Container>
+    </View>
   );
 }

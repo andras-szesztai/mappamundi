@@ -1,12 +1,9 @@
 import { Feather } from '@expo/vector-icons';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import React from 'react';
-import { Button, Text, YStack } from 'tamagui';
-
-import { Container, Main, Subtitle, Title } from '../tamagui.config';
+import { Button, Main, Text, View, YStack } from 'tamagui';
 
 export default function Details() {
-  const { name } = useLocalSearchParams();
   const router = useRouter();
 
   const BackButton = () => (
@@ -23,14 +20,13 @@ export default function Details() {
   );
 
   return (
-    <Container>
+    <View>
       <Stack.Screen options={{ title: 'Details', headerLeft: BackButton }} />
       <Main>
         <YStack>
-          <Title>Details</Title>
-          <Subtitle>Showing details for user {name}.</Subtitle>
+          <Text>Details</Text>
         </YStack>
       </Main>
-    </Container>
+    </View>
   );
 }
