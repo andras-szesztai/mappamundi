@@ -1,6 +1,5 @@
-import { Airplay } from '@tamagui/lucide-icons';
-import { Stack, Link } from 'expo-router';
-import { Button, ButtonText, Main, Text, View, YStack } from 'tamagui';
+import { Stack } from 'expo-router';
+import { Main, View, YStack } from 'tamagui';
 
 import { Globe } from '~/components/molecules/Globe/Globe';
 
