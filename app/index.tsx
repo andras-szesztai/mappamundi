@@ -1,20 +1,17 @@
-import { Airplay } from '@tamagui/lucide-icons';
-import { Stack, Link } from 'expo-router';
-import { Button, ButtonText, Main, Text, View, YStack } from 'tamagui';
+import { Stack } from 'expo-router';
+import { Main, View } from 'tamagui';
+
+import { Globe } from '~/components/molecules/Globe/Globe';
+import Colors from '~/constants/Colors';
 
 export default function Page() {
   return (
     <View>
       <Main>
-        <Stack.Screen options={{ title: 'Overview' }} />
-        <YStack>
-          <Text>Hello World</Text>
-        </YStack>
-        <Link href={{ pathname: '/details', params: { name: 'Dan' } }} asChild>
-          <Button alignSelf="center" icon={Airplay} size="$6">
-            <ButtonText>Large</ButtonText>
-          </Button>
-        </Link>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View backgroundColor={Colors.azure}>
+          <Globe />
+        </View>
       </Main>
     </View>
   );
