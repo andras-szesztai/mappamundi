@@ -1,16 +1,17 @@
 import { Stack } from 'expo-router';
-import { Main, View, YStack } from 'tamagui';
+import { Main, View } from 'tamagui';
 
 import { Globe } from '~/components/molecules/Globe/Globe';
+import Colors from '~/constants/Colors';
 
 export default function Page() {
   return (
     <View>
       <Main>
         <Stack.Screen options={{ headerShown: false }} />
-        <YStack rowGap="$10">
+        <View backgroundColor={Colors.azure}>
           <Globe />
-        </YStack>
+        </View>
       </Main>
     </View>
   );
