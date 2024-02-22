@@ -2,14 +2,14 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { TamaguiProvider } from 'tamagui';
 
-import config from '../tamagui.config';
+import './global.css';
 
 export default function Layout() {
   const [loaded] = useFonts({
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+    fredokaLight: require('../assets/fonts/Fredoka-Light.ttf'),
+    fredokaMedium: require('../assets/fonts/Fredoka-Medium.ttf'),
+    fredokaBold: require('../assets/fonts/Fredoka-Bold.ttf'),
   });
 
   useEffect(() => {
@@ -21,10 +21,8 @@ export default function Layout() {
   if (!loaded) return null;
 
   return (
-    <TamaguiProvider config={config}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack />
-      </GestureHandlerRootView>
-    </TamaguiProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack />
+    </GestureHandlerRootView>
   );
 }

@@ -1,10 +1,9 @@
 {
   "expo": {
-    "name": "tamagui-rn-test",
-    "slug": "tamagui-rn-test",
+    "name": "mappamundi",
+    "slug": "mappamundi",
     "version": "1.0.0",
-
-    "scheme": "tamagui-rn-test",
+    "scheme": "mappamundi",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -13,10 +12,8 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true,
-
       "tsconfigPaths": true
     },
-
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -27,7 +24,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "mappamundi"
     },
     "android": {
       "adaptiveIcon": {
