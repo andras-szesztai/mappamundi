@@ -1,10 +1,10 @@
 import Mapbox, { Camera } from '@rnmapbox/maps';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
-import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 
 import globeData from '~/assets/countries.json';
 import Colors from '~/constants/Colors';
+import { GameMachineContext } from '~/machines/gameMachine';
 
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoic3plYW5kciIsImEiOiJjbHN5eTI4b2gwa2JjMmtwMmNtOWtjcWx6In0.Ae7WTlD4Heg2XoOdQEcP4g'
@@ -14,12 +14,15 @@ type ShapeType = FeatureCollection<Geometry, GeoJsonProperties>;
 
 export function Globe() {
   const { height, width } = useWindowDimensions();
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [guessedCountry, setGuessedCountry] = useState<string | null>(null);
+  const gameMachineRef = GameMachineContext.useActorRef();
+  const countryToFind = GameMachineContext.useSelector((state) => state.context.countryToFind);
+  const selectedCountry = GameMachineContext.useSelector((state) => state.context.selectedCountry);
+  const guessedCountry = GameMachineContext.useSelector((state) => state.context.guessedCountry);
+  const stateValue = GameMachineContext.useSelector((state) => state.value);
   const selectedShape = {
     type: 'FeatureCollection',
     features: [
-      globeData.features.find((feature) => feature.properties.formal_en === selectedCountry),
+      globeData.features.find((feature) => feature.properties.name_long === selectedCountry),
     ],
   } as ShapeType;
   return (
@@ -42,8 +45,12 @@ export function Globe() {
         <Mapbox.ShapeSource
           id="countrySource"
           onPress={(e) => {
-            setGuessedCountry(null);
-            setSelectedCountry(e.features[0].properties?.formal_en);
+            if (stateValue === 'Active') {
+              gameMachineRef.send({
+                type: 'country.select',
+                selectedCountry: e.features[0].properties?.name_long,
+              });
+            }
           }}
           shape={globeData as ShapeType}>
           <Mapbox.FillLayer
@@ -54,12 +61,14 @@ export function Globe() {
             }}
           />
         </Mapbox.ShapeSource>
-        {!!selectedShape && (
+        {!!selectedCountry && (
           <Mapbox.ShapeSource
             id="selectedCountrySource"
             shape={selectedShape}
-            onPress={(e) => {
-              setGuessedCountry(e.features[0].properties?.formal_en);
+            onPress={() => {
+              gameMachineRef.send(
+                countryToFind === selectedCountry ? { type: 'success' } : { type: 'failure' }
+              );
             }}>
             <Mapbox.FillLayer
               id="selectedCountryLayer"
@@ -75,8 +84,8 @@ export function Globe() {
             <Mapbox.FillLayer
               id="guessedCountryLayer"
               style={{
-                fillColor: Colors.midnightGreen,
-                fillOutlineColor: Colors.midnightGreen,
+                fillColor: stateValue === 'Success' ? Colors.midnightGreen : Colors.crayola,
+                fillOutlineColor: stateValue === 'Success' ? Colors.midnightGreen : Colors.amaranth,
               }}
             />
           </Mapbox.ShapeSource>

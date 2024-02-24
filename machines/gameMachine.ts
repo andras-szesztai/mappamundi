@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react';
 import { assign, createMachine } from 'xstate';
 
 import globeData from '~/assets/countries.json';
@@ -5,14 +6,15 @@ import { CountryProperties } from '~/types/countryData';
 
 const sovereignCountries: CountryProperties[] = globeData.features
   .filter(
-    (feature) => feature.properties.type === 'Sovereign country' && feature.properties.formal_en
+    (feature) => feature.properties.type === 'Sovereign country' && feature.properties.name_long
   )
   .map((feature) => feature.properties);
 
 const context: {
   countryToFind: string | null;
+  selectedCountry: string | null;
   guessedCountry: string | null;
-} = { countryToFind: null, guessedCountry: null };
+} = { countryToFind: null, selectedCountry: null, guessedCountry: null };
 
 export const gameMachine = createMachine({
   id: 'game',
@@ -24,34 +26,43 @@ export const gameMachine = createMachine({
     },
     NewRound: {
       entry: assign({
-        countryToFind: () => {
-          const randomIndex = Math.floor(Math.random() * sovereignCountries.length);
-          return sovereignCountries[randomIndex].name_long;
-        },
+        countryToFind: () =>
+          sovereignCountries[Math.floor(Math.random() * sovereignCountries.length)].name_long,
+        selectedCountry: null,
+        guessedCountry: null,
       }),
       after: { 100: 'Active' },
     },
     Active: {
+      entry: assign({
+        selectedCountry: null,
+        guessedCountry: null,
+      }),
       on: {
         success: 'Success',
         failure: 'Failure',
       },
+      exit: assign({
+        guessedCountry: ({ context }) => context.selectedCountry,
+      }),
     },
     Success: {
-      on: { restart: 'NewRound' },
+      on: { newRound: 'NewRound' },
     },
     Failure: {
       on: { retry: 'Active', newRound: 'NewRound', reveal: 'Revealed' },
     },
     Revealed: {
-      on: { restart: 'NewRound' },
+      on: { newRound: 'NewRound' },
     },
   },
   on: {
-    'country.guess': {
+    'country.select': {
       actions: assign({
-        guessedCountry: ({ event }) => event.guessedCountry,
+        selectedCountry: ({ event }) => event.selectedCountry,
       }),
     },
   },
 });
+
+export const GameMachineContext = createActorContext(gameMachine);
