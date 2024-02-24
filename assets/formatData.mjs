@@ -5,12 +5,14 @@ const loadJson = (path) => {
   return JSON.parse(data);
 };
 
-const jsonData = loadJson('assets/countries.geo.json');
+const jsonData = loadJson('assets/custom.geo.json');
 
 const formattedFeatures = jsonData.features.map((d) => {
   return {
     ...d,
     properties: {
+      label_x: d.properties.label_x,
+      label_y: d.properties.label_y,
       type: d.properties.type,
       name_long: d.properties.name_long,
       formal_en: d.properties.formal_en,
@@ -27,4 +29,7 @@ const formattedFeatures = jsonData.features.map((d) => {
   };
 });
 
-fs.writeFileSync('./formattedData.json', JSON.stringify(formattedFeatures, null, 2));
+fs.writeFileSync(
+  './countries.json',
+  JSON.stringify({ type: 'FeatureCollection', features: formattedFeatures })
+);

@@ -14,7 +14,8 @@ const context: {
   countryToFind: string | null;
   selectedCountry: string | null;
   guessedCountry: string | null;
-} = { countryToFind: null, selectedCountry: null, guessedCountry: null };
+  round: number;
+} = { countryToFind: null, selectedCountry: null, guessedCountry: null, round: 0 };
 
 export const gameMachine = createMachine({
   id: 'game',
@@ -30,6 +31,7 @@ export const gameMachine = createMachine({
           sovereignCountries[Math.floor(Math.random() * sovereignCountries.length)].name_long,
         selectedCountry: null,
         guessedCountry: null,
+        round: ({ context }) => context.round + 1,
       }),
       after: { 100: 'Active' },
     },
@@ -53,6 +55,10 @@ export const gameMachine = createMachine({
       on: { retry: 'Active', newRound: 'NewRound', reveal: 'Revealed' },
     },
     Revealed: {
+      entry: assign({
+        selectedCountry: null,
+        guessedCountry: null,
+      }),
       on: { newRound: 'NewRound' },
     },
   },

@@ -1,5 +1,7 @@
+/* eslint-disable max-lines */
 import Mapbox, { Camera } from '@rnmapbox/maps';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
+import { useRef, useEffect } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 
 import globeData from '~/assets/countries.json';
@@ -14,6 +16,7 @@ type ShapeType = FeatureCollection<Geometry, GeoJsonProperties>;
 
 export function Globe() {
   const { height, width } = useWindowDimensions();
+  const camera = useRef<Camera>(null);
   const gameMachineRef = GameMachineContext.useActorRef();
   const countryToFind = GameMachineContext.useSelector((state) => state.context.countryToFind);
   const selectedCountry = GameMachineContext.useSelector((state) => state.context.selectedCountry);
@@ -25,6 +28,23 @@ export function Globe() {
       globeData.features.find((feature) => feature.properties.name_long === selectedCountry),
     ],
   } as ShapeType;
+  useEffect(() => {
+    if (stateValue === 'Revealed') {
+      const countryToFindProperties = globeData.features.find(
+        (feature) => feature.properties.name_long === countryToFind
+      )?.properties;
+      if (countryToFindProperties) {
+        gameMachineRef.send({
+          type: 'country.select',
+          selectedCountry: countryToFindProperties.name_long,
+        });
+        camera.current?.flyTo(
+          [countryToFindProperties.label_x, countryToFindProperties.label_y],
+          1000
+        );
+      }
+    }
+  }, [stateValue]);
   return (
     <View
       style={{
@@ -41,7 +61,14 @@ export function Globe() {
           width,
           height,
         }}>
-        <Camera maxZoomLevel={10} minZoomLevel={1} />
+        <Camera
+          ref={camera}
+          maxZoomLevel={10}
+          minZoomLevel={1}
+          centerCoordinate={[0, 0]}
+          animationDuration={0}
+          zoomLevel={1.5}
+        />
         <Mapbox.ShapeSource
           id="countrySource"
           onPress={(e) => {
