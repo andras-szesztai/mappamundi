@@ -1,4 +1,5 @@
 export default {
+  raisinBlack: '#29282A',
   verdigris: '#00afb9',
   midnightGreen: '#1D545B',
   azure: '#ebfeff',
