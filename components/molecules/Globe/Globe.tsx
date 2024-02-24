@@ -1,4 +1,5 @@
 import Mapbox, { Camera } from '@rnmapbox/maps';
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 
@@ -9,14 +10,18 @@ Mapbox.setAccessToken(
   'pk.eyJ1Ijoic3plYW5kciIsImEiOiJjbHN5eTI4b2gwa2JjMmtwMmNtOWtjcWx6In0.Ae7WTlD4Heg2XoOdQEcP4g'
 );
 
+type ShapeType = FeatureCollection<Geometry, GeoJsonProperties>;
+
 export function Globe() {
   const { height, width } = useWindowDimensions();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [guessedCountry, setGuessedCountry] = useState<string | null>(null);
-  const selectedShape = globeData.features.find(
-    (feature: any) => feature.properties.formal_en === selectedCountry
-  );
-  const guessedShape = guessedCountry && selectedShape;
+  const selectedShape = {
+    type: 'FeatureCollection',
+    features: [
+      globeData.features.find((feature) => feature.properties.formal_en === selectedCountry),
+    ],
+  } as ShapeType;
   return (
     <View
       style={{
@@ -40,7 +45,7 @@ export function Globe() {
             setGuessedCountry(null);
             setSelectedCountry(e.features[0].properties?.formal_en);
           }}
-          shape={globeData as any}>
+          shape={globeData as ShapeType}>
           <Mapbox.FillLayer
             id="countriesLayer"
             style={{
@@ -49,10 +54,10 @@ export function Globe() {
             }}
           />
         </Mapbox.ShapeSource>
-        {selectedShape && (
+        {!!selectedShape && (
           <Mapbox.ShapeSource
             id="selectedCountrySource"
-            shape={selectedShape as any}
+            shape={selectedShape}
             onPress={(e) => {
               setGuessedCountry(e.features[0].properties?.formal_en);
             }}>
@@ -65,8 +70,8 @@ export function Globe() {
             />
           </Mapbox.ShapeSource>
         )}
-        {guessedShape && (
-          <Mapbox.ShapeSource id="guessedCountrySource" shape={guessedShape as any}>
+        {!!guessedCountry && (
+          <Mapbox.ShapeSource id="guessedCountrySource" shape={selectedShape}>
             <Mapbox.FillLayer
               id="guessedCountryLayer"
               style={{
