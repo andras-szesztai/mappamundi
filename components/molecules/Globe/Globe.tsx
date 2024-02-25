@@ -3,9 +3,9 @@ import Mapbox, { Camera } from '@rnmapbox/maps';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { useRef, useEffect } from 'react';
 import { View, useWindowDimensions } from 'react-native';
+import colors from 'tailwindcss/colors';
 
 import globeData from '~/assets/countries.json';
-import Colors from '~/constants/Colors';
 import { GameMachineContext } from '~/machines/gameMachine';
 
 Mapbox.setAccessToken(
@@ -47,6 +47,7 @@ export function Globe() {
   }, [stateValue]);
   return (
     <View
+      className="absolute"
       style={{
         width,
         height,
@@ -84,7 +85,7 @@ export function Globe() {
             id="countriesLayer"
             style={{
               fillColor: 'transparent',
-              fillOutlineColor: Colors.raisinBlack,
+              fillOutlineColor: colors.gray[900],
             }}
           />
         </Mapbox.ShapeSource>
@@ -100,8 +101,8 @@ export function Globe() {
             <Mapbox.FillLayer
               id="selectedCountryLayer"
               style={{
-                fillColor: Colors.verdigris,
-                fillOutlineColor: Colors.midnightGreen,
+                fillColor: colors.teal[500],
+                fillOutlineColor: colors.teal[950],
               }}
             />
           </Mapbox.ShapeSource>
@@ -111,8 +112,8 @@ export function Globe() {
             <Mapbox.FillLayer
               id="guessedCountryLayer"
               style={{
-                fillColor: stateValue === 'Success' ? Colors.midnightGreen : Colors.crayola,
-                fillOutlineColor: stateValue === 'Success' ? Colors.midnightGreen : Colors.amaranth,
+                fillColor: stateValue === 'Success' ? colors.teal[800] : colors.rose[800],
+                fillOutlineColor: stateValue === 'Success' ? colors.teal[950] : colors.rose[950],
               }}
             />
           </Mapbox.ShapeSource>

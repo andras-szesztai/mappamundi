@@ -9,16 +9,7 @@ module.exports = {
       medium: ['fredokaMedium', 'sans-serif'],
       bold: ['fredokaBold', 'sans-serif'],
     },
-    extend: {
-      colors: {
-        verdigris: '#00afb9',
-        midnightGreen: '#1D545B',
-        azure: '#ebfeff',
-        sunglow: '#FFC941',
-        amaranth: '#E63757',
-        crayola: '#F76F8E',
-      },
-    },
+    extend: {},
   },
   plugins: [],
 };

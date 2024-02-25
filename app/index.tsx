@@ -8,7 +8,7 @@ import { GameMachineContext } from '~/machines/gameMachine';
 
 export default function Page() {
   return (
-    <View>
+    <View className="relative flex flex-1 flex-col">
       <Stack.Screen options={{ headerShown: false }} />
       <GameMachineContext.Provider>
         <Globe />
