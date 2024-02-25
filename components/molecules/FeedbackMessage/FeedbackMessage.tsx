@@ -24,7 +24,7 @@ export const FeedbackMessageContent = ({
       <View
         testID="hint"
         className="flex items-center px-4 py-2 translate-y-4 bg-yellow-600 max-w-min border-y border-y-yellow-950">
-        <Text className="text-lg text-yellow-50">
+        <Text className="text-lg text-center text-yellow-50">
           {selectedCountry ? 'Tap again to finalize selection' : 'Tap on a country to select'}
         </Text>
       </View>
@@ -34,7 +34,9 @@ export const FeedbackMessageContent = ({
         testID="failure"
         className="flex flex-col items-center justify-center gap-4 p-4 translate-y-4 border-y bg-rose-800 border-y-rose-950">
         <View>
-          <Text className="text-xl text-rose-50">Incorrect, you selected {selectedCountry}</Text>
+          <Text className="text-xl text-center text-rose-50">
+            Incorrect, you selected {selectedCountry}
+          </Text>
         </View>
         <View className="flex-row gap-2">
           <Button
@@ -43,13 +45,13 @@ export const FeedbackMessageContent = ({
             onPress={() => onPress('retry')}
             {...errorButtonProps}
           />
-          <Button color="error" onPress={() => onPress('newRound')} {...newRoundButtonProps} />
           <Button
             label="Reveal"
             icon="Eye"
             onPress={() => onPress('reveal')}
             {...errorButtonProps}
           />
+          <Button color="error" onPress={() => onPress('newRound')} {...newRoundButtonProps} />
         </View>
       </View>
     )}
