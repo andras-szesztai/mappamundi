@@ -1,15 +1,20 @@
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
+import { CountryToFindCard } from '~/components/molecules/CountryToFindCard/CountryToFindCard';
+import { FeedbackMessage } from '~/components/molecules/FeedbackMessage/FeedbackMessage';
 import { Globe } from '~/components/molecules/Globe/Globe';
+import { GameMachineContext } from '~/machines/gameMachine';
 
 export default function Page() {
   return (
-    <View>
+    <View className="relative flex flex-col flex-1">
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="bg-azure">
+      <GameMachineContext.Provider>
         <Globe />
-      </View>
+        <FeedbackMessage />
+        <CountryToFindCard />
+      </GameMachineContext.Provider>
     </View>
   );
 }

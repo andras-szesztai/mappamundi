@@ -1,47 +1,25 @@
-import { geoOrthographic, geoPath } from 'd3-geo';
-import { useState } from 'react';
-import {
-  GestureUpdateEvent,
-  PanGestureChangeEventPayload,
-  PanGestureHandlerEventPayload,
-  PinchGestureChangeEventPayload,
-  PinchGestureHandlerEventPayload,
-} from 'react-native-gesture-handler';
+import { Camera } from '@rnmapbox/maps';
+import { useEffect } from 'react';
 
-import { baseScale } from './constants';
+import globeData from '~/assets/countries.json';
+import { GameMachineContext } from '~/machines/gameMachine';
 
-export const usePath = (width: number, height: number) => {
-  const [rotation, setRotation] = useState<number[]>([0, 0]);
-  const [scale, setScale] = useState(baseScale);
-  const projection = geoOrthographic()
-    .scale(scale)
-    .center([0, 0])
-    .rotate(rotation as [number, number])
-    .translate([width / 2, height / 2]);
-  const path = geoPath().projection(projection);
-
-  const onPanChange = ({
-    velocityX,
-    velocityY,
-    changeX,
-    changeY,
-  }: GestureUpdateEvent<PanGestureHandlerEventPayload & PanGestureChangeEventPayload>) => {
-    if (Math.abs(velocityX) > 200 || Math.abs(velocityY) > 200) {
-      const k = 75 / scale;
-      const newY = rotation[1] - changeY * k;
-      const newRotation = [rotation[0] + changeX * k, newY > 90 ? 90 : newY < -90 ? -90 : newY];
-      setRotation(newRotation);
+export const useReveal = (camera: Camera | null) => {
+  const gameMachineRef = GameMachineContext.useActorRef();
+  const countryToFind = GameMachineContext.useSelector((state) => state.context.countryToFind);
+  const stateValue = GameMachineContext.useSelector((state) => state.value);
+  useEffect(() => {
+    if (stateValue === 'Revealed' && camera) {
+      const countryToFindProperties = globeData.features.find(
+        (feature) => feature.properties.name_long === countryToFind
+      )?.properties;
+      if (countryToFindProperties) {
+        gameMachineRef.send({
+          type: 'country.select',
+          selectedCountry: countryToFindProperties.name_long,
+        });
+        camera.flyTo([countryToFindProperties.label_x, countryToFindProperties.label_y], 1000);
+      }
     }
-  };
-
-  const onZoomChange = ({
-    scale: changedScale,
-  }: GestureUpdateEvent<PinchGestureHandlerEventPayload & PinchGestureChangeEventPayload>) => {
-    const newScale = scale * changedScale;
-    const percentOfBase = newScale / baseScale;
-    if (percentOfBase > 0.8 && percentOfBase < 10) {
-      setScale(newScale);
-    }
-  };
-  return { path, projection, onPanChange, onZoomChange };
+  }, [stateValue]);
 };
