@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { Button } from '~/components/atoms/Button/Button';
 import { GameMachineContext } from '~/machines/gameMachine';
 
-export const QuestionedCountry = () => {
+export const CountryToFindCard = () => {
   const gameMachineRef = GameMachineContext.useActorRef();
   const countryToFind = GameMachineContext.useSelector((state) => state.context.countryToFind);
   const stateValue = GameMachineContext.useSelector((state) => state.value);

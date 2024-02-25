@@ -1,9 +1,9 @@
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
+import { CountryToFindCard } from '~/components/molecules/CountryToFindCard/CountryToFindCard';
 import { FeedbackMessage } from '~/components/molecules/FeedbackMessage/FeedbackMessage';
 import { Globe } from '~/components/molecules/Globe/Globe';
-import { QuestionedCountry } from '~/components/molecules/QuestionedCountry/QuestionedCountry';
 import { GameMachineContext } from '~/machines/gameMachine';
 
 export default function Page() {
@@ -13,7 +13,7 @@ export default function Page() {
       <GameMachineContext.Provider>
         <Globe />
         <FeedbackMessage />
-        <QuestionedCountry />
+        <CountryToFindCard />
       </GameMachineContext.Provider>
     </View>
   );
