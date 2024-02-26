@@ -1,5 +1,5 @@
 import { createActorContext } from '@xstate/react';
-import { assign, createMachine } from 'xstate';
+import { assign, createMachine, stateIn } from 'xstate';
 
 import globeData from '~/assets/countries.json';
 import { CountryProperties } from '~/types/countryData';
@@ -10,7 +10,7 @@ const sovereignCountries: CountryProperties[] = globeData.features
   )
   .map((feature) => feature.properties);
 
-const context: {
+const initialContext: {
   countryToFind: string | null;
   selectedCountry: string | null;
   guessedCountry: string | null;
@@ -19,7 +19,7 @@ const context: {
 
 export const gameMachine = createMachine({
   id: 'game',
-  context,
+  context: initialContext,
   initial: 'Idle',
   states: {
     Idle: {
@@ -33,7 +33,10 @@ export const gameMachine = createMachine({
         guessedCountry: null,
         round: ({ context }) => context.round + 1,
       }),
-      after: { 100: 'Active' },
+      always: {
+        guard: ({ context }) => !!context.countryToFind,
+        target: 'Active',
+      },
     },
     Active: {
       entry: assign({
@@ -56,7 +59,7 @@ export const gameMachine = createMachine({
     },
     Revealed: {
       entry: assign({
-        selectedCountry: null,
+        selectedCountry: ({ context }) => context.countryToFind,
         guessedCountry: null,
       }),
       on: { newRound: 'NewRound' },
@@ -64,6 +67,7 @@ export const gameMachine = createMachine({
   },
   on: {
     'country.select': {
+      guard: stateIn('Active'),
       actions: assign({
         selectedCountry: ({ event }) => event.selectedCountry,
       }),
